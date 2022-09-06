@@ -1,5 +1,7 @@
 package com.example.attendance.controller;
 
+import com.example.attendance.dto.response.Response;
+import com.example.attendance.dto.response.ResponseModel;
 import com.example.attendance.model.User;
 import com.example.attendance.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,35 +20,47 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<User>> findAll() {
+    public ResponseEntity<ResponseModel> findAll() {
         List<User> users = (List<User>) userService.findAll();
         if (users.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ResponseModel(Response.OBJECT_NOT_FOUND, null), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, users), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<User> save(@RequestBody User user) {
-        return new ResponseEntity<>(userService.save(user), HttpStatus.CREATED);
+    public ResponseEntity<ResponseModel> save(@RequestBody User user) {
+        userService.save(user);
+        return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, user), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable("id") Long id) {
+    public ResponseEntity<ResponseModel> findById(@PathVariable("id") Long id) {
         Optional<User> user = userService.findById(id);
         if (!user.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ResponseModel(Response.OBJECT_NOT_FOUND, null), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, user.get()), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable("id") Long id, @RequestBody User user) {
+    public ResponseEntity<ResponseModel> update(@PathVariable("id") Long id, @RequestBody User user) {
         Optional<User> currentUser = userService.findById(id);
         if (!currentUser.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ResponseModel(Response.OBJECT_NOT_FOUND, null), HttpStatus.NOT_FOUND);
         }
         user = userService.updateUser(currentUser, user);
-        return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
+        userService.save(user);
+        return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, user), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseModel> delete(@PathVariable("id") Long id) {
+        Optional<User> user = userService.findById(id);
+        if (!user.isPresent()) {
+            return new ResponseEntity<>(new ResponseModel(Response.OBJECT_NOT_FOUND, null), HttpStatus.NOT_FOUND);
+        }
+        userService.delete(id);
+        return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, user), HttpStatus.OK);
     }
 }

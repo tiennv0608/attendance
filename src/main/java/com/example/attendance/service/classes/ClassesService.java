@@ -43,4 +43,9 @@ public class ClassesService implements IClassesService {
         return classes;
     }
 
+    @Override
+    public Boolean existsByName(String name) {
+        return classesRepository.existsByName(name);
+    }
+
 }

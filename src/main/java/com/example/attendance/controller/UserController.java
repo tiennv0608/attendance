@@ -52,6 +52,9 @@ public class UserController {
         if (!currentUser.isPresent()) {
             return new ResponseEntity<>(new ResponseModel(Response.OBJECT_NOT_FOUND, null), HttpStatus.NOT_FOUND);
         }
+        if (userService.existsByUsername(user.getUsername())) {
+            return new ResponseEntity<>(new ResponseModel(Response.USERNAME_IS_EXISTS, null), HttpStatus.CONFLICT);
+        }
         user = userService.update(currentUser, user);
         userService.save(user);
         return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, user), HttpStatus.OK);
@@ -64,6 +67,6 @@ public class UserController {
             return new ResponseEntity<>(new ResponseModel(Response.OBJECT_NOT_FOUND, null), HttpStatus.NOT_FOUND);
         }
         userService.delete(id);
-        return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, user.get()), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, user.get()), HttpStatus.NO_CONTENT);
     }
 }

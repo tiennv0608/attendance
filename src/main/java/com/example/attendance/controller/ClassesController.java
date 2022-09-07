@@ -60,6 +60,9 @@ public class ClassesController {
         if (!curClasses.isPresent()) {
             return new ResponseEntity<>(new ResponseModel(Response.OBJECT_NOT_FOUND, null), HttpStatus.NOT_FOUND);
         }
+        if (classesService.existsByName(classes.getName())) {
+            return new ResponseEntity<>(new ResponseModel(Response.NAME_IS_EXISTS, null), HttpStatus.CONFLICT);
+        }
         classes = classesService.update(curClasses, classes);
         classesService.save(classes);
         return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, classes), HttpStatus.OK);
@@ -72,6 +75,6 @@ public class ClassesController {
             return new ResponseEntity<>(new ResponseModel(Response.OBJECT_NOT_FOUND, null), HttpStatus.NOT_FOUND);
         }
         classesService.delete(id);
-        return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, classes.get()), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, classes.get()), HttpStatus.NO_CONTENT);
     }
 }

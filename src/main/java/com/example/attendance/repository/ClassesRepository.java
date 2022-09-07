@@ -8,4 +8,5 @@ import com.example.attendance.model.Classes;
 @Repository
 public interface ClassesRepository extends JpaRepository<Classes, Long> {
 
+    Boolean existsByName(String name);
 }

@@ -38,6 +38,9 @@ public class ClassesController {
 
     @PostMapping
     public ResponseEntity<ResponseModel> create(@RequestBody Classes classes) {
+        if (classesService.existsByName(classes.getName())) {
+            return new ResponseEntity<>(new ResponseModel(Response.NAME_IS_EXISTS, null), HttpStatus.CONFLICT);
+        }
         classesService.save(classes);
         return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, classes), HttpStatus.CREATED);
     }
@@ -48,7 +51,7 @@ public class ClassesController {
         if (!classes.isPresent()) {
             return new ResponseEntity<>(new ResponseModel(Response.OBJECT_NOT_FOUND, null), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, classes), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, classes.get()), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

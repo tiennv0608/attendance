@@ -29,7 +29,10 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseModel> save(@RequestBody User user) {
+    public ResponseEntity<ResponseModel> create(@RequestBody User user) {
+        if (userService.existsByUsername(user.getUsername())) {
+            return new ResponseEntity<>(new ResponseModel(Response.USERNAME_IS_EXISTS, null), HttpStatus.CONFLICT);
+        }
         userService.save(user);
         return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, user), HttpStatus.CREATED);
     }
@@ -49,18 +52,18 @@ public class UserController {
         if (!currentUser.isPresent()) {
             return new ResponseEntity<>(new ResponseModel(Response.OBJECT_NOT_FOUND, null), HttpStatus.NOT_FOUND);
         }
-        user = userService.updateUser(currentUser, user);
+        user = userService.update(currentUser, user);
         userService.save(user);
         return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, user), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseModel> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<ResponseModel> deleteById(@PathVariable("id") Long id) {
         Optional<User> user = userService.findById(id);
         if (!user.isPresent()) {
             return new ResponseEntity<>(new ResponseModel(Response.OBJECT_NOT_FOUND, null), HttpStatus.NOT_FOUND);
         }
         userService.delete(id);
-        return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, user), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, user.get()), HttpStatus.OK);
     }
 }

@@ -33,7 +33,8 @@ public class UserService implements IUserService {
         userRepository.deleteById(id);
     }
 
-    public User updateUser(Optional<User> currentUser, User user) {
+    @Override
+    public User update(Optional<User> currentUser, User user) {
         user.setId(currentUser.get().getId());
         if (user.getUsername() == null || user.getUsername().trim().equals("")) {
             user.setUsername(currentUser.get().getUsername());
@@ -54,5 +55,10 @@ public class UserService implements IUserService {
             user.setAge(currentUser.get().getAge());
         }
         return user;
+    }
+
+    @Override
+    public Boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
     }
 }

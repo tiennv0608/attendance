@@ -34,4 +34,13 @@ public class ClassesService implements IClassesService {
         classesRepository.deleteById(id);
     }
 
+    @Override
+    public Classes update(Optional<Classes> cur, Classes classes) {
+        classes.setId(cur.get().getId());
+        if (classes.getName() == null || classes.getName().trim().equals("")) {
+            classes.setName(cur.get().getName());
+        }
+        return classes;
+    }
+
 }

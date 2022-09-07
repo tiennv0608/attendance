@@ -10,4 +10,6 @@ public interface IGeneralService<T> {
     T save(T t);
 
     void delete(Long id);
+
+    T update(Optional<T> cur, T t);
 }

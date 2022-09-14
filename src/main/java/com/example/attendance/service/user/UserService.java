@@ -2,7 +2,11 @@ package com.example.attendance.service.user;
 
 import com.example.attendance.model.User;
 import com.example.attendance.repository.UserRepository;
+import com.example.attendance.security.principle.UserPrinciple;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -61,4 +65,18 @@ public class UserService implements IUserService {
     public Boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> user = findByUsername(username);
+        if (!user.isPresent())
+            throw new UsernameNotFoundException(username);
+        return UserPrinciple.build(user.get());
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
 }

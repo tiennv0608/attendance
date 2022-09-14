@@ -7,6 +7,7 @@ import com.example.attendance.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping
     public ResponseEntity<ResponseModel> findAll() {
@@ -33,6 +37,8 @@ public class UserController {
         if (userService.existsByUsername(user.getUsername())) {
             return new ResponseEntity<>(new ResponseModel(Response.USERNAME_IS_EXISTS, null), HttpStatus.CONFLICT);
         }
+        String encode = passwordEncoder.encode(user.getPassword().trim());
+        user.setPassword(encode);
         userService.save(user);
         return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, user), HttpStatus.CREATED);
     }

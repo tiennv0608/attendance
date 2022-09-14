@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import com.example.attendance.constants.Constant;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -26,4 +28,6 @@ public class User {
     private int age;
 
     private String address;
+
+    private Constant.RoleName role;
 }

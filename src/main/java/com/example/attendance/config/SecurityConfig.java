@@ -19,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 // import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -60,7 +62,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/**").hasAnyAuthority("ADMIN")
                 .antMatchers("/classes/**").hasAnyAuthority("ADMIN", "TEACHER")
                 .antMatchers("/students/**").hasAnyAuthority("ADMIN", "STUDENT", "TEACHER")
-                .antMatchers("/login", "/home").permitAll() // Cho phép tất cả mọi người truy cập vào 2 địa chỉ này
+                .antMatchers("/login", "/home").permitAll() // Cho phép tất cả mọi người truy cập vào 2 địa chỉ
+                                                            // này
                 .anyRequest().authenticated() // Tất cả các request khác đều cần phải xác thực mới được truy cập
                 .and()
                 .logout() // Cho phép logout

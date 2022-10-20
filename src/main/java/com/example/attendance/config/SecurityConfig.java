@@ -60,7 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/users/**").hasAnyAuthority("ADMIN")
-                .antMatchers("/classes/**").hasAnyAuthority("ADMIN", "TEACHER")
+                .antMatchers("/teachers/**").hasAnyAuthority("ADMIN", "TEACHER")
+                .antMatchers("/classes/**").permitAll()
                 .antMatchers("/students/**").hasAnyAuthority("ADMIN", "STUDENT", "TEACHER")
                 .antMatchers("/login", "/home").permitAll() // Cho phép tất cả mọi người truy cập vào 2 địa chỉ
                                                             // này

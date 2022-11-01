@@ -1,8 +1,14 @@
 package com.example.attendance.service.teacher;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.example.attendance.model.Teacher;
@@ -61,6 +67,16 @@ public class TeacherService implements ITeacherService {
             teacher.setClasses(cur.get().getClasses());
         }
         return teacher;
+    }
+
+    public List<Teacher> getAllTeacher(Integer pageNo, Integer pageSize) {
+        Pageable paging = PageRequest.of(pageNo, pageSize);
+        Page<Teacher> pagedResult = teacherRepository.findAll(paging);
+        if (pagedResult.hasContent()) {
+            return pagedResult.getContent();
+        } else {
+            return new ArrayList<>();
+        }
     }
 
 }

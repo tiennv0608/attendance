@@ -15,7 +15,7 @@ import io.jsonwebtoken.*;
 @Service
 public class UserJwtService {
     private static final String SECRET_KEY = "123456789";
-    private static final long EXPIRE_TIME = 86400000000L;
+    private static final long EXPIRE_TIME = 86400L;
     private static final Logger logger = LoggerFactory.getLogger(UserJwtService.class.getName());
 
     public String generateTokenLogin(Authentication authentication) {
@@ -49,10 +49,10 @@ public class UserJwtService {
     }
 
     public String getUserNameFromJwtToken(String token) {
-        String userName = Jwts.parser()
+        String username = Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody().getSubject();
-        return userName;
+        return username;
     }
 }

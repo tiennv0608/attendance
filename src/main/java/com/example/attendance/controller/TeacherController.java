@@ -1,5 +1,6 @@
 package com.example.attendance.controller;
 
+import java.net.http.HttpHeaders;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.attendance.dto.response.Response;
@@ -60,6 +62,7 @@ public class TeacherController {
             return new ResponseEntity<>(new ResponseModel(Response.OBJECT_NOT_FOUND, null), HttpStatus.NOT_FOUND);
         }
         teacher = teacherService.update(curTeacher, teacher);
+        teacherService.save(teacher);
         return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, teacher), HttpStatus.OK);
     }
 
@@ -71,5 +74,16 @@ public class TeacherController {
         }
         teacherService.delete(id);
         return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, teacher), HttpStatus.OK);
+    }
+
+    @GetMapping("/paging")
+    public ResponseEntity<ResponseModel> getAllEmployees(
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        List<Teacher> list = teacherService.getAllTeacher(pageNo, pageSize);
+        if (list.size() == 0) {
+            return new ResponseEntity<>(new ResponseModel(Response.OBJECT_NOT_FOUND, null), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(new ResponseModel(Response.SUCCESS, list), HttpStatus.OK);
     }
 }
